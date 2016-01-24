@@ -3,20 +3,20 @@ from django.db import models
 
 
 
-class Location(models.Model):
+class Locations(models.Model):
   state        = models.CharField('State', max_length=64)
   city         = models.CharField('City', max_length=64)
  
-class User(models.Model):
+class Users(models.Model):
   name         = models.CharField('User', max_length=64)
-  location     = models.ForeignKey('Location')
+  location     = models.ForeignKey('Locations')
    
 class Messages(models.Model):
   # I'm making an assumption that a user has a permanently
   # set location; if the location is meant to be for where the
   # user is sending the message from, put a foreign key to
   # location here.
-  user         = models.ForeignKey('User')
+  user         = models.ForeignKey('Users')
   message      = models.TextField('Message')
   create_time  = models.DateTimeField('Date', auto_now_add=True)
 

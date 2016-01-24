@@ -4,11 +4,11 @@ import datetime
 
 class MessageMethodsTestCase(TestCase):
   def setUp(self):
-    location = Location(city="Albuquerque", 
+    location = Locations(city="Albuquerque", 
                         state="New Mexico")
     location.save()
 
-    user = User(name="Dave",
+    user = Users(name="Dave",
                 location=location)
     user.save()
 
@@ -19,8 +19,8 @@ class MessageMethodsTestCase(TestCase):
 
   def test_counts(self):
     self.assertEqual(Messages.objects.all().count(),1)
-    self.assertEqual(User.objects.all().count(),1)
-    self.assertEqual(Location.objects.all().count(),1)
+    self.assertEqual(Users.objects.all().count(),1)
+    self.assertEqual(Locations.objects.all().count(),1)
   def test_city_property(self):
     m = Messages.objects.all()[0]
     self.assertEqual(m.city, 'Albuquerque')
