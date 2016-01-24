@@ -9,9 +9,14 @@ class Location(models.Model):
  
 class User(models.Model):
   name         = models.CharField('User', max_length=64)
- 
+  location     = models.ForeignKey('Location')
+   
 class Messages(models.Model):
-  username     = models.CharField('User', max_length=64)
+  # I'm making an assumption that a user has a permanently
+  # set location; if the location is meant to be for where the
+  # user is sending the message from, put a foreign key to
+  # location here.
+  user         = models.ForeignKey('User')
   message      = models.TextField('Message')
   create_time  = models.DateTimeField('Date', auto_now_add=True)
 
