@@ -1,6 +1,23 @@
-from django.test import TestCase
+from django.test       import TestCase
 from fpmessages.models import *
+from fpmessages.views  import *
 import datetime
+
+class ViewDecoratorsTestCase(TestCase):
+  def test_return_json(self):
+    @return_json
+    def success(request):
+      return {'test': True}
+
+    @return_json
+    def failure(request):
+      5/0 # throw an exception
+      return {'test': True}
+
+    self.assertEqual(success('bogus').content,
+                     '{"test": true, "result": "success"}')
+    self.assertEqual(failure('bogus').content,
+                     '{"result": "error", "error": "integer division or modulo by zero"}')
 
 class MessageMethodsTestCase(TestCase):
   def setUp(self):
