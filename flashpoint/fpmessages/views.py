@@ -9,7 +9,10 @@ import sys
 #
 # this would be a neat way to make a standardized
 # REST api.
-
+#
+# Also, the results of the called function should
+# probably be put under their own dictionary key,
+# otherwise naming conflicts could occur.
 def return_json(fun):
   def wrapper(*args,**kwargs):
     try:

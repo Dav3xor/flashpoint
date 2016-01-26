@@ -6,11 +6,9 @@ class Counters(models.Model):
   # database to store these key-value pairs.  Redis would
   # be good for this...
   """A Django model for storing a counter under a key. """
-  key          = models.CharField('Key', max_length=64)
-  value        = models.PositiveIntegerField('Value', default=0)
-
-  # I could make these class methods, but it would mostly
-  # just be extra typing...
+  key          = models.CharField            ('Key', max_length=64)
+  value        = models.PositiveIntegerField ('Value', default=0)
+ 
   @classmethod
   def get_counter(cobj, key):
     counter = cobj.objects.get_or_create(key=key)[0]
@@ -25,18 +23,20 @@ class Counters(models.Model):
   @classmethod
   def decrement(cobj, key):
     # this isn't terribly DRY, but for brevity's sake.
-    counter, isnew = cobj.objects.get_or_create(key=key)
+    counter = cobj.get_counter(key)
     counter.value -= 1
     counter.save()
 
   @classmethod
   def current_value(cobj, key):
-    counter, isnew = cobj.objects.get_or_create(key=key)
+    counter = cobj.get_counter(key)
     return counter.value
-
+  
+  def __str__(self):
+    return self.key + " --> " + str(self.value)
 
 # Abstract class gives quick countability to derived Models
-
+#
 # this system only works if you only access these tables
 # through the django models.  if you add/delete a record
 # outside of Django, it will lose sync.
@@ -65,9 +65,14 @@ class Countable(models.Model):
 # etc.
 class Locations(Countable):
   """Django Model for storing city/state pairs"""
-  state        = models.CharField('State', max_length=64)
-  city         = models.CharField('City', max_length=64)
+  state        = models.CharField   ('State', max_length=64)
+  city         = models.CharField   ('City', max_length=64)
+  
+  def __str__(self):
+    return self.city + ", " + self.state
 
+  class Meta:
+    unique_together = ('state','city')
 
 # also store the users in a separate table
 class Users(Countable):
@@ -76,8 +81,12 @@ class Users(Countable):
   probably used the normal Django User, but did this for...  
   (once again) brevity.
   """
-  name         = models.CharField('User', max_length=64)
-  location     = models.ForeignKey('Locations')
+  name         = models.CharField   ('User', max_length=64)
+  location     = models.ForeignKey  ('Locations')
+  
+  def __str__(self):
+    return self.name + " (" + str(self.location) + ")"
+
   class Meta:
     unique_together = ('name','location')
    
@@ -87,9 +96,12 @@ class Messages(models.Model):
   # user is sending the message from, put a foreign key to
   # location here
   """Django Model for storing messages for users"""
-  user         = models.ForeignKey('Users')
-  message      = models.TextField('Message')
-  create_time  = models.DateTimeField('Date', auto_now_add=True)
+  user         = models.ForeignKey    ('Users')
+  message      = models.TextField     ('Message')
+  create_time  = models.DateTimeField ('Date', auto_now_add=True)
+
+  def __str__(self):
+    return str(self.user) + " --> " + self.message
 
   # make properties for fields in original specification
   # that are now parts of different tables.  Leaving
@@ -107,4 +119,6 @@ class Messages(models.Model):
     return self.user.location.city
 
   class Meta:
-    ordering = ['user__location__state', 'user__location__city', 'create_time']
+    ordering = ['user__location__state', 
+                'user__location__city', 
+                'create_time']
