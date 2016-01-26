@@ -25,7 +25,8 @@ def return_json(fun):
       return JsonResponse(output)
   return wrapper
 
+
 @return_json
 def stats(request):
   return { 'cities': Locations.fast_count(), 
-           'users': Users.fast_count() }
+           'users':  Users.fast_count() }
