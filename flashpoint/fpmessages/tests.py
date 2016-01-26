@@ -26,6 +26,8 @@ class ViewDecoratorsTestCase(TestCase):
     self.assertEqual(failure('bogus').content,
                      '{"result": "error", "error": "integer division or modulo by zero"}')
 
+
+
 class CountersTestCase(TestCase):
   def test_counters(self):
     Counters.increment('test')
@@ -33,6 +35,8 @@ class CountersTestCase(TestCase):
     Counters.decrement('test')
     self.assertEqual(Counters.objects.get(key='test').value, 0)
     self.assertEqual(Counters.current_value('test'), 0)
+   
+   
     
 class StatsViewTestCase(TestCase):
   def setUp(self):
@@ -59,6 +63,8 @@ class StatsViewTestCase(TestCase):
     response = stats('request')
     self.assertEqual(response.serialize(),
                      'Content-Type: application/json\r\n\r\n{"cities": 16, "users": 637, "result": "success"}')
+
+
 
 class MessageMethodsTestCase(TestCase):
   def setUp(self):
