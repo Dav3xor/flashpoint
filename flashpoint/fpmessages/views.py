@@ -4,6 +4,12 @@ from django.http import JsonResponse
 from fpmessages.models import *
 import sys
 
+# decorator for automatically returning json with
+# success/failure based on thrown exceptions.
+#
+# this would be a neat way to make a standardized
+# REST api.
+
 def return_json(fun):
   def wrapper(*args,**kwargs):
     try:
@@ -18,5 +24,5 @@ def return_json(fun):
 
 @return_json
 def stats(request):
-  return { 'cities': Locations.count(), 
-           'users': Users.count() }
+  return { 'cities': Locations.fast_count(), 
+           'users': Users.fast_count() }
