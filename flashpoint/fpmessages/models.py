@@ -5,6 +5,11 @@ class Counters(models.Model):
   # obvious optimization: use something faster than a SQL
   # database to store these key-value pairs.  Redis would
   # be good for this...
+  # 
+  # This may be temporarily incorrect, and may not be
+  # thread safe if used in certain ways.  YMMV, see
+  # program manager for details.  Results same as with
+  # sugar pill.
   """A Django model for storing a counter under a key. """
   key          = models.CharField            ('Key', max_length=64)
   value        = models.PositiveIntegerField ('Value', default=0)
